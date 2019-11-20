@@ -1,92 +1,90 @@
-package com.dariopellegrini.kotlinui.ui
+package com.dariopellegrini.kotlinui.ui.builders
 
 import android.view.View
 import android.widget.*
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dariopellegrini.kotlinui.constants.matchParent
-import com.dariopellegrini.kotlinui.ui.dimensions.params
-import com.dariopellegrini.kotlinui.ui.dimensions.paramsFromContainer
+import com.dariopellegrini.kotlinui.ui.ViewContainer
 
 
-fun ViewAdding.customView(closure: () -> View): View {
+fun ViewContainer.customView(closure: () -> View): View {
     val view = closure()
-    this.appendView(view)
+    this.addView(view)
     return view
 }
 
-fun ViewAdding.textView(text: String, closure: TextView.() -> Unit = {}): TextView {
+fun ViewContainer.textView(text: String, closure: TextView.() -> Unit = {}): TextView {
     val textView = TextView(context)
     textView.text = text
     textView.closure()
-    this.appendView(textView)
+    this.addView(textView)
     return textView
 }
 
-fun ViewAdding.button(action: () -> Unit, closure: Button.() -> Unit = {}): Button {
+fun ViewContainer.button(action: () -> Unit, closure: Button.() -> Unit = {}): Button {
     val button = Button(context)
     button.setOnClickListener {
         action()
     }
     button.closure()
-    this.appendView(button)
+    this.addView(button)
     return button
 }
 
-fun ViewAdding.view(closure: View.() -> Unit): View {
+fun ViewContainer.view(closure: View.() -> Unit): View {
     val view = View(context)
     view.closure()
-    this.appendView(view)
+    this.addView(view)
     return view
 }
 
-fun ViewAdding.verticalLayout(closure: ViewGroupBuilder.() -> Unit): LinearLayout {
+fun ViewContainer.verticalLayout(closure: ViewGroupBuilder.() -> Unit): LinearLayout {
     val verticalLayout = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
     val builder = ViewGroupBuilder(verticalLayout)
     builder.closure()
-    this.appendView(verticalLayout)
+    this.addView(verticalLayout)
     return verticalLayout
 }
 
-fun ViewAdding.horizontalLayout(closure: ViewGroupBuilder.() -> Unit): LinearLayout {
+fun ViewContainer.horizontalLayout(closure: ViewGroupBuilder.() -> Unit): LinearLayout {
     val horizontalLayout = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
     val builder = ViewGroupBuilder(horizontalLayout)
     builder.closure()
-    this.appendView(horizontalLayout)
+    this.addView(horizontalLayout)
     return horizontalLayout
 }
 
-fun ViewAdding.zLayout(closure: ViewGroupBuilder.() -> Unit): FrameLayout {
+fun ViewContainer.zLayout(closure: ViewGroupBuilder.() -> Unit): FrameLayout {
     val frameLayout = FrameLayout(context)
     val builder = ViewGroupBuilder(frameLayout)
     builder.closure()
-    this.appendView(frameLayout)
+    this.addView(frameLayout)
     return frameLayout
 }
 
-fun ViewAdding.scrollView(closure: ViewGroupBuilder.() -> Unit): FrameLayout {
+fun ViewContainer.scrollView(closure: ViewGroupBuilder.() -> Unit): FrameLayout {
     val scrollView =  ScrollView(context)
     val verticalLayout = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
     scrollView.addView(verticalLayout)
     val builder = ViewGroupBuilder(verticalLayout)
     builder.closure()
-    this.appendView(scrollView)
+    this.addView(scrollView)
     return scrollView
 }
 
-fun ViewAdding.horizontalScrollView(closure: ViewGroupBuilder.() -> Unit): FrameLayout {
+fun ViewContainer.horizontalScrollView(closure: ViewGroupBuilder.() -> Unit): FrameLayout {
     val scrollView =  HorizontalScrollView(context)
     val horizontalLayout = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
     scrollView.addView(horizontalLayout)
     val builder = ViewGroupBuilder(horizontalLayout)
     builder.closure()
-    this.appendView(scrollView)
+    this.addView(scrollView)
     return scrollView
 }
 
-fun ViewAdding.separator(weight: Float = 1f): View {
+fun ViewContainer.separator(weight: Float = 1f): View {
     val view = View(context)
-    this.appendView(view)
+    this.addView(view)
     val parent = view.parent as? LinearLayout
     if (parent != null) {
         if (parent.orientation == LinearLayout.VERTICAL) {
@@ -99,9 +97,9 @@ fun ViewAdding.separator(weight: Float = 1f): View {
     return view
 }
 
-fun ViewAdding.fixedSeparator(value: Int): View {
+fun ViewContainer.fixedSeparator(value: Int): View {
     val view = View(context)
-    this.appendView(view)
+    this.addView(view)
     val parent = view.parent as? LinearLayout
     if (parent != null) {
         if (parent.orientation == LinearLayout.VERTICAL) {
@@ -114,11 +112,11 @@ fun ViewAdding.fixedSeparator(value: Int): View {
     return view
 }
 
-fun ViewAdding.swipeRefreshLayout(action: (SwipeRefreshLayout) -> Unit, closure: ViewGroupBuilder.() -> Unit): SwipeRefreshLayout {
+fun ViewContainer.swipeRefreshLayout(action: (SwipeRefreshLayout) -> Unit, closure: ViewGroupBuilder.() -> Unit): SwipeRefreshLayout {
     val swipeRefreshLayout = SwipeRefreshLayout(context)
     val builder = ViewGroupBuilder(swipeRefreshLayout)
     builder.closure()
-    this.appendView(swipeRefreshLayout)
+    this.addView(swipeRefreshLayout)
     swipeRefreshLayout.setOnRefreshListener {
         action(swipeRefreshLayout)
     }

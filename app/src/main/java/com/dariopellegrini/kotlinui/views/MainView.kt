@@ -2,8 +2,9 @@ package com.dariopellegrini.kotlinui.views
 
 import android.graphics.Color
 import android.view.Gravity
-import android.view.ViewGroup
+import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.dariopellegrini.kotlinui.constants.matchParent
@@ -12,43 +13,30 @@ import com.dariopellegrini.kotlinui.kview.*
 import com.dariopellegrini.kotlinui.ui.*
 import com.dariopellegrini.kotlinui.ui.actions.onClick
 import com.dariopellegrini.kotlinui.ui.actions.toast
-import com.dariopellegrini.kotlinui.ui.body.configure
+import com.dariopellegrini.kotlinui.ui.builders.*
 import com.dariopellegrini.kotlinui.ui.dimensions.dp
 import com.dariopellegrini.kotlinui.ui.dimensions.margin
 import com.dariopellegrini.kotlinui.ui.dimensions.params
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.dariopellegrini.kotlinui.ui.dimensions.sp
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import java.util.*
 
-class MainView: KView {
-    var games by observable(listOf<Game>())
+class MainView: KView() {
+//    var games by observable(listOf<Game>())
+    var title by observable("Hello")
 
     override val body: ViewClosure
         get() = {
             verticalLayout {
-                textView("Hello") {
-                    textSize = 21f
-                    setTextColor(Color.BLACK)
-                }.params(matchParent, wrapContent)
-
-                horizontalLayout {
-                    embed(HorizontalListLayout())
-                }.params(matchParent, wrapContent)
-
+                textView(title)
                 button({
-                    toast("Get games")
-                    CoroutineScope(Dispatchers.Main).launch { games = getGames() }
+                    title = "$title Hello!"
                 }) {
-                    text = "Press"
+                    text = "Change title"
                 }
-
                 scrollView {
-                    verticalLayout {
-                        games.forEach {
-                            embed(GameText(it))
-                        }
-                    }
+                    embed(RandomText(8))
+                    embed(RandomText(8))
                 }
             }
         }
@@ -75,7 +63,7 @@ suspend fun getGames(): List<Game> {
     )
 }
 
-class ListLayout(val list: List<Game>): KView {
+class ListLayout(val list: List<Game>): KView() {
     override val body: ViewClosure
         get() = {
             recyclerView {
@@ -89,7 +77,22 @@ class ListLayout(val list: List<Game>): KView {
         }
 }
 
-class HorizontalListLayout: KView {
+class RandomText(val length: Int): KView() {
+    var value: String by observable("Hello1")
+    override val body: ViewClosure
+        get() = {
+            verticalLayout {
+                textView(value)
+                button({
+                    value = ('A'..'z').map { it }.shuffled().subList(0, length).joinToString("")
+                }) {
+                    text = "Random string"
+                }
+            }
+        }
+}
+
+class HorizontalListLayout: KView() {
     var list by observable(listOf(
         Game("Horizon Zero Dawn", "Playstation 4"),
         Game("Grand Theft Auto V", "Playstation 3"),
@@ -107,16 +110,16 @@ class HorizontalListLayout: KView {
                             ImageView(context).apply {
                                 Glide.with(this).load("https://goo.gl/gEgYUd").into(this)
                             }
-                        }.params(150, 150)
+                        }.params(75, 150)
 
                         textView(game.name) {
-                            textSize = 21f
+                            textSize = 18f
                             setTextColor(Color.BLACK)
                         }.params(matchParent, wrapContent)
                             .margin(16, 16, 16, 0)
 
                         textView(game.platform) {
-                            textSize = 19f
+                            textSize = 16f
                             setTextColor(Color.LTGRAY)
                         }.params(matchParent, wrapContent)
                             .margin(16, 0, 16, 16)
@@ -142,7 +145,7 @@ class HorizontalListLayout: KView {
                     )
                 }) {
                     text = "Reload"
-                }.params(200, matchParent)
+                }.params(35, matchParent)
 
             }.apply {
                 setPadding(0,0,0, dp(96f))
@@ -151,7 +154,7 @@ class HorizontalListLayout: KView {
         }
 }
 
-class NameRow(val title: String, val subtitle: String): KView {
+class NameRow(val title: String, val subtitle: String): KView() {
 
     override val body: ViewClosure
         get() = {
@@ -160,13 +163,13 @@ class NameRow(val title: String, val subtitle: String): KView {
 
                 verticalLayout {
                     textView(title) {
-                        textSize = 21f
+                        textSize = sp(14f)
                         setTextColor(Color.BLACK)
                     }.params(matchParent, wrapContent)
                             .margin(16, 16, 16, 0)
 
                     textView(subtitle) {
-                        textSize = 19f
+                        textSize = sp(12f)
                         setTextColor(Color.LTGRAY)
                     }.params(matchParent, wrapContent)
                             .margin(16, 0, 16, 16)
@@ -185,7 +188,7 @@ class NameRow(val title: String, val subtitle: String): KView {
 
 }
 
-class GlideImage(val src: String): KView {
+class GlideImage(val src: String): KView() {
     override val body: ViewClosure
         get() = {
             customView {
@@ -196,7 +199,7 @@ class GlideImage(val src: String): KView {
         }
 }
 
-class GameText(val game: Game): KView {
+class GameText(val game: Game): KView() {
     override val body: ViewClosure
         get() = {
             textView("Game: ${game.name}, Platform: ${game.platform}")

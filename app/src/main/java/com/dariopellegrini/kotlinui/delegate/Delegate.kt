@@ -1,6 +1,5 @@
 package com.dariopellegrini.kotlinui.delegate
 
-import com.dariopellegrini.kotlinui.kview.KView
 import kotlin.reflect.KProperty
 
 class Delegate<T>(var value: T, val action: (() -> Unit)? = null) {

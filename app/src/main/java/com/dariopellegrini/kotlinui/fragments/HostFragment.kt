@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.dariopellegrini.kotlinui.R
 import com.dariopellegrini.kotlinui.kview.KView
-import com.dariopellegrini.kotlinui.ui.body.configure
+import com.dariopellegrini.kotlinui.ui.extensions.configure
 import kotlinx.android.synthetic.main.fragment_host.*
 
 class HostFragment(private val scene: KView) : Fragment() {
